@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wayfinder: personalized travel itinerary planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="top">
+    <h1 class="brand">Wayfinder</h1>
+    <p class="mode" id="mode-badge" hidden></p>
+  </header>
+
+  <main class="layout">
+    <form id="trip-form" class="panel" novalidate>
+      <h2>Your trip</h2>
+
+      <label class="field">
+        <span>Destination</span>
+        <input id="destination" name="destination" type="text" maxlength="80" placeholder="Kyoto, Japan" required autocomplete="off">
+      </label>
+
+      <div class="row">
+        <label class="field">
+          <span>Days</span>
+          <input id="days" name="days" type="number" min="1" max="14" value="4" required>
+        </label>
+        <label class="field">
+          <span>Travelers</span>
+          <input id="travelers" name="travelers" type="number" min="1" max="20" value="2" required>
+        </label>
+        <label class="field">
+          <span>Currency</span>
+          <select id="currency" name="currency">
+            <option>USD</option><option>EUR</option><option>GBP</option><option>INR</option>
+          </select>
+        </label>
+      </div>
+
+      <fieldset class="field">
+        <legend>Budget</legend>
+        <div class="segmented">
+          <label><input type="radio" name="budget" value="budget"><span>Budget</span></label>
+          <label><input type="radio" name="budget" value="moderate" checked><span>Moderate</span></label>
+          <label><input type="radio" name="budget" value="luxury"><span>Luxury</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>Pace</legend>
+        <div class="segmented">
+          <label><input type="radio" name="pace" value="relaxed"><span>Relaxed</span></label>
+          <label><input type="radio" name="pace" value="balanced" checked><span>Balanced</span></label>
+          <label><input type="radio" name="pace" value="packed"><span>Packed</span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>Interests</legend>
+        <div class="chips" id="interests"></div>
+      </fieldset>
+
+      <label class="field">
+        <span>Anything else we should know?</span>
+        <textarea id="notes" name="notes" rows="3" maxlength="500" placeholder="Vegetarian, traveling with a toddler, avoid long walks"></textarea>
+      </label>
+
+      <button class="primary" id="submit-btn" type="submit">Plan my trip</button>
+      <p class="form-error" id="form-error" role="alert" hidden></p>
+    </form>
+
+    <section class="results" id="results" aria-live="polite">
+      <div class="empty" id="empty">
+        <h2>Where to next?</h2>
+        <p>Fill in your trip on the left, or start from one of these.</p>
+        <div class="examples">
+          <button type="button" data-example="kyoto">4 days in Kyoto for temples and food</button>
+          <button type="button" data-example="lisbon">3 days in Lisbon, relaxed, on a budget</button>
+          <button type="button" data-example="banff">5 days in Banff for hiking and photography</button>
+        </div>
+      </div>
+
+      <div class="loading" id="loading" hidden>
+        <div class="route-loader" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        <p>Plotting your route. This usually takes 10 to 20 seconds.</p>
+      </div>
+
+      <article id="itinerary" hidden>
+        <header class="trip-head">
+          <div>
+            <h2 id="trip-title"></h2>
+            <p id="trip-summary"></p>
+            <p class="note" id="trip-season"></p>
+          </div>
+          <div class="total">
+            <span class="total-label">Estimated total</span>
+            <strong id="trip-total"></strong>
+            <span class="total-label" id="trip-people"></span>
+          </div>
+        </header>
+
+        <div class="toolbar">
+          <div class="tabs" id="day-tabs" role="tablist" aria-label="Days"></div>
+          <div class="actions">
+            <button type="button" class="ghost" id="copy-btn">Copy as text</button>
+            <button type="button" class="ghost" id="print-btn">Print or save PDF</button>
+          </div>
+        </div>
+
+        <section id="day-panel" role="tabpanel">
+          <div class="day-head">
+            <h3 id="day-theme"></h3>
+            <span id="day-cost"></span>
+          </div>
+          <ol class="timeline" id="timeline"></ol>
+
+          <form class="refine" id="refine-form">
+            <label for="refine-input">Not feeling this day?</label>
+            <div class="refine-row">
+              <input id="refine-input" type="text" maxlength="300" placeholder="More outdoors, fewer museums">
+              <button type="submit" class="ghost" id="refine-btn">Redo this day</button>
+            </div>
+          </form>
+        </section>
+
+        <div class="tips">
+          <section><h3>Pack</h3><ul id="packing"></ul></section>
+          <section><h3>Good to know</h3><ul id="local-tips"></ul></section>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
